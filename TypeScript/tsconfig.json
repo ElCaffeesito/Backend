@@ -1,0 +1,11 @@
+{
+    "include": ["./src/**/*.ts"],
+    "compilerOptions": {
+        "outDir": "dist",
+        "noImplicitAny": true,
+        "target": "ES6",
+        "esModuleInterop": true,
+        "module": "NodeNext"
+    },
+    "exclude": ["src/**/*.spec.ts"]
+}
