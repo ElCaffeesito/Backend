@@ -9,3 +9,5 @@ De esta manera automáticamente se ejecutará en el puerto 3000, el cual es el e
 usando [este](http://localhost:3000) link, será más fácil dirigirse al link deseado para poder acceder a la página del memorama.
 
 >Por alguna razón no logro que funcionen o cuadren los usuarios y ya me estresé, se supone que debería de funcionar esto a pesar de ello, pero ni pruebas pude hacer, si luego me puede explicar mi error y como solucionarlo, se agradecería c:
+
+>Edit: para las 11:20 se pudo arreglar el error con ayuda del profe :)

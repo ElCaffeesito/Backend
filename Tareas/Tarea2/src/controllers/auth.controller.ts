@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import auth from '../models/auth';
 import { HTTP_STATUS_CODES } from "../types/http-status-codes"
 import { generateToken } from "./token.controller";
+import { IUser } from "../types/user";
 
 // Registro
 class AuthController {
@@ -16,12 +17,12 @@ class AuthController {
       }
     }
   
-    login = async (req: Request, res: Response) => {
+    loginUser = async (req: Request, res: Response) => {
       const { email, password } = req.body;
   
       try {
         const user = await auth.loginUser(email, password);
-        const token = generateToken(user);
+        const token = generateToken(user as IUser);
         res.status(HTTP_STATUS_CODES.SUCCESS).json({ token });
       } catch (error) {
         res.status(HTTP_STATUS_CODES.BAD_REQUEST).json({ message: (error as Error).message });
