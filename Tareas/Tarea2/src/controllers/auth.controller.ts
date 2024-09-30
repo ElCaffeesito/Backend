@@ -1,66 +1,33 @@
 import { Request, Response } from "express";
-import User from '../models/user'
+import auth from '../models/auth';
 import { HTTP_STATUS_CODES } from "../types/http-status-codes"
-import { encryptPassword, isPasswordValid, generateToken } from "./token.controller";
+import { generateToken } from "./token.controller";
 
 // Registro
-export const createUser = async (req: Request, res: Response) => {
-    const { firstName, lastName, email, password, role } = req.query;
-
-    if (!firstName || !lastName || !email || !password) {
-        return res.status(HTTP_STATUS_CODES.NOT_FOUND).send("Faltan datos requeridos en la URL");
+class AuthController {
+    registerUser = async (req: Request, res: Response) => {
+      const { firstName, email, password, role } = req.body;
+  
+      try {
+        const user = await auth.registerUser(firstName, email, password, role);
+        res.status(HTTP_STATUS_CODES.CREATED).json({ message: 'User created' });
+      } catch (error) {
+        res.status(HTTP_STATUS_CODES.BAD_REQUEST).json({ error: (error as Error).message });
+      }
     }
-
-    try {
-        const existingUser = await User.findOne({ email });
-        if (existingUser) {
-            return res.status(HTTP_STATUS_CODES.BAD_REQUEST).send("El usuario ya existe");
-        }
-
-        const hashedPassword = encryptPassword(password as string);
-
-        // Crear el nuevo usuario
-        const newUser = new User({
-            firstName: firstName as string,
-            lastName: lastName as string,
-            email: email as string,
-            password: hashedPassword,
-            role: role, 
-            status: 'active', 
-        });
-
-        await newUser.save();
-
-        res.status(HTTP_STATUS_CODES.SUCCESS).send("Usuario creado exitosamente");
-    } catch (error) {
-        res.status(HTTP_STATUS_CODES.SERVER_ERROR).send("Error del servidor");
+  
+    login = async (req: Request, res: Response) => {
+      const { email, password } = req.body;
+  
+      try {
+        const user = await auth.loginUser(email, password);
+        const token = generateToken(user);
+        res.status(HTTP_STATUS_CODES.SUCCESS).json({ token });
+      } catch (error) {
+        res.status(HTTP_STATUS_CODES.BAD_REQUEST).json({ message: (error as Error).message });
+      }
     }
-}
-
-// Login
-export const loginUser = async (req: Request, res: Response) => {
-
-    const { email, password } = req.query;
-
-    if (!email || !password) {
-        return res.status(400).send('Faltan parámetros requeridos en la URL');
-    }
-
-    try {
-        const user = await User.findOne({ email, status: 'active' });
-        if (!user) {
-            return res.status(400).send('Credenciales inválidas');
-        }
-
-        const isValid = isPasswordValid(password as string, user.password);
-        if (!isValid) {
-            return res.status(400).send('Credenciales inválidas');
-        }
-
-        const token = generateToken(user.email, user.role);
-
-        res.status(200).send(token);
-    } catch (error) {
-        res.status(500).send(`Error del servidor: ${error}`);
-    }
-}
+  }
+  
+  const authController = new AuthController();
+  export default authController;

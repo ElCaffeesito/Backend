@@ -1,9 +1,10 @@
 import crypto from 'crypto';
 import jwt from 'jsonwebtoken';
+import { IUser } from '../types/user';
 
 // Generar token de acceso basado en el JWT Secret
-export const generateToken = (userId: string, role: string) => {
-  return jwt.sign({ id: userId, role }, process.env.JWT_SECRET || '', { expiresIn: '1h' });
+export const generateToken = (user: IUser) => {
+  return jwt.sign({ name: user.firstName, email: user.email, role: user.role }, process.env.JWT_SECRET || '', { expiresIn: '1h' });
 };
 
 // Encriptar usando el JWT secret como clave
