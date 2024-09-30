@@ -1,0 +1,13 @@
+import { Schema, model, SchemaTypes } from 'mongoose';
+
+const userSchema = new Schema({
+    firstName: { type: SchemaTypes.String, required: true },
+    lastName: { type: SchemaTypes.String },
+    email: { type: SchemaTypes.String, required: true, unique: true },
+    password: { type: SchemaTypes.String, required: true },
+    role: { type: SchemaTypes.String, default: 'user' },
+    status: { type: SchemaTypes.String },
+})
+
+const user = model('user', userSchema);
+export default user;
