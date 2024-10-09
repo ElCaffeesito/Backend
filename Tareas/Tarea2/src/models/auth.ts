@@ -8,7 +8,6 @@ const SALT_ROUNDS = 7;
 
 class Authenticator {
 
-
   registerUser = async (firstName: string, email: string, password: string, role: string) => {
     const user = await User.findOne({ email });
     if (user) {
